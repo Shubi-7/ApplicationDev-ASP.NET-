@@ -5,18 +5,8 @@
 }
 
 <h2>Available Role for Application</h2>
-<selection class="col-sm-6">
-    <table class="table-bordered">
-        @Html.ActionLink("Create Role", "Create", "Role")
-    </table>
-</selection>
-
-<selection class="col-sm-6">
-    <table class="table-bordered">
-        @Html.ActionLink("Assign Role To User", "RegisterRole", "Account")
-    </table>
-</selection>
-
+<a class="btn btn-facebook" href="@Url.Action("Create","Role")">Create Role</a>
+<a class="btn btn-facebook" href="@Url.Action("RegisterRole","Account")">Register Role</a>
 <br />
 
 <table class="table table-bordered table-hover">
