@@ -15,6 +15,22 @@ namespace CourseWork2.Models
         public string ReturnUrl { get; set; }
     }
 
+    public class UpdateViewModel
+    {
+        public string UserId { get; set; }
+        [Required]
+        [Display(Name = "Phone")]
+        public string PhoneNumber { get; set; }
+
+
+        [Required]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+    }
     public class SendCodeViewModel
     {
         public string SelectedProvider { get; set; }
@@ -81,6 +97,10 @@ namespace CourseWork2.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Phone")]
+        public string PhoneNumber { get; set; }
     }
 
     public class ResetPasswordViewModel

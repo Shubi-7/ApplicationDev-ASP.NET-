@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CourseWork2.Models;
+using System.Collections.Generic;
 
 namespace CourseWork2.Controllers
 {
@@ -28,7 +29,9 @@ namespace CourseWork2.Controllers
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            
         }
+        
 
         public ApplicationSignInManager SignInManager
         {
@@ -53,6 +56,22 @@ namespace CourseWork2.Controllers
                 _userManager = value;
             }
         }
+
+        public ActionResult Index()
+        {
+            var users = context.Users.ToList();
+            IEnumerable<UpdateViewModel>
+                userList = (from u in users select new UpdateViewModel { UserId = u.Id, Email = u.Email, UserName = u.UserName, PhoneNumber = u.PhoneNumber }).AsEnumerable();
+            return View(userList);
+
+        }
+        //List User
+        //[HttpGet]
+        //public ActionResult ListUsers()
+        //{
+        //    var users = UserManager.Users;
+        //    return View(users);
+        //}
 
         //
         // GET: /Account/Login
@@ -153,7 +172,7 @@ namespace CourseWork2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
