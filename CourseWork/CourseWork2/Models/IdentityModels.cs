@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace CourseWork2.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+         [Display(Name ="Full Name"),Required]
+         public string FullName { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -32,5 +35,10 @@ namespace CourseWork2.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<CourseWork2.Models.AlbumArtists> AlbumArtists { get; set; }
+        public System.Data.Entity.DbSet<CourseWork2.Models.Artist> Artists { get; set; }
+        public System.Data.Entity.DbSet<CourseWork2.Models.Producer> Producers { get; set; }
+
     }
 }
