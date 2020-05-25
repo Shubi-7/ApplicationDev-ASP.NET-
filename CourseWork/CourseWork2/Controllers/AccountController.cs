@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CourseWork2.Models;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Runtime.Remoting.Contexts;
 
 namespace CourseWork2.Controllers
 {
@@ -25,12 +27,23 @@ namespace CourseWork2.Controllers
             context = new ApplicationDbContext();
         }
 
+        public ActionResult Index()
+        {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            var
+
+
+        }
+
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
             SignInManager = signInManager;
             
         }
+
         
 
         public ApplicationSignInManager SignInManager
