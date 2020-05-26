@@ -1,0 +1,83 @@
+﻿@model CourseWork2.Models.Album
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Album</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CopyNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CopyNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Studio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Studio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReleaseDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TrackLength)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrackLength)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsAgeBar)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsAgeBar)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FinePerDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FinePerDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlbumImagePath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlbumImagePath)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

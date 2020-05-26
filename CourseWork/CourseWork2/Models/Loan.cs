@@ -18,9 +18,11 @@ namespace CourseWork2.Models
         public decimal FineAmount { get; set; }
         [Required]
         public DateTime IssueDate { get; set; }
-        public DateTime? ReturnDate { get; set; }
-        [ForeignKey("Member Id")]
-        public virtual Member Members { get; set; }
+        [Required]
+        public DateTime DueDate { get; set; }
+        public DateTime ReturnDate { get; set; }
+        [ForeignKey("MemberId")]
+        public virtual Member Member { get; set; }
         [ForeignKey("AlbumId")]
         public virtual Album Album { get; set; }
         [ForeignKey("LoanTypeId")]
