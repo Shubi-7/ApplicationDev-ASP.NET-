@@ -19,6 +19,7 @@ namespace CourseWork2.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ApplicationDbContext context;
@@ -27,16 +28,88 @@ namespace CourseWork2.Controllers
         {
             context = new ApplicationDbContext();
         }
+        public ActionResult Index()
+        {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleMngr.Roles.ToList();
+            var users = context.Users.Include(m => m.Roles).ToList();
+            IEnumerable<UpdateViewModel> userList = (from u in users
+                                                     select new UpdateViewModel
+                                                     {
+                                                         UserId = u.Id,
+                                                         Email = u.Email,
+                                                         PhoneNumber = u.PhoneNumber,
+                                                         UserName = u.UserName,
+                                                         UserRoles = roles.FirstOrDefault(m => m.Id == u.Roles.FirstOrDefault().RoleId).Name
+                                                     }).AsEnumerable();
+            return View(userList);
+        }
+        [Authorize(Roles = "Manager")]
+        public ActionResult EditUser(string id)
+        {
+            if (id != null)
+            {
+
+                UpdateViewModel update = new UpdateViewModel();
+                var roleStore = new RoleStore<IdentityRole>(context);
+                var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+                var roles = roleMngr.Roles.ToList();
+
+                var appUser = context.Users.FirstOrDefault(m => m.Id == id);//_userManager.FindById(id);
+                update.Email = appUser.Email;
+                update.UserId = id;
+                update.UserName = appUser.UserName;
+                update.PhoneNumber = appUser.PhoneNumber;
+                ViewBag.UserRoles = new SelectList(roles, "Name", "Name", roles.FirstOrDefault(m => m.Id == appUser.Roles.FirstOrDefault().RoleId).Name);
+
+                return View(update);
+            }
+            return RedirectToAction("Index");
+        }
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public ActionResult EditUser(UpdateViewModel user)
+        {
+
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleMngr.Roles.ToList();
+
+            ViewBag.UserRoles = new SelectList(roles, "Name", "Name");
+
+            ApplicationUser appUser = context.Users.FirstOrDefault(m => m.Id == user.UserId);
+
+            appUser.PhoneNumber = user.PhoneNumber;
+            appUser.Email = user.Email;
+            appUser.UserName = user.UserName;
 
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+            var oldRoleId = appUser.Roles.FirstOrDefault().RoleId;
+            var oldRoleName = context.Roles.FirstOrDefault(r => r.Id == oldRoleId).Name;
+
+            if (oldRoleName != user.UserRoles)
+            {
+                UserManager.RemoveFromRole(appUser.Id, oldRoleName);
+                UserManager.AddToRole(appUser.Id, user.UserRoles);
+
+            }
+
+            context.SaveChanges();
+
+
+            TempData["Message"] = "User Updated Successfully";
+            return RedirectToAction("Index");
+        }
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
-            
         }
-
-        
 
         public ApplicationSignInManager SignInManager
         {
@@ -44,9 +117,9 @@ namespace CourseWork2.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -61,22 +134,6 @@ namespace CourseWork2.Controllers
                 _userManager = value;
             }
         }
-
-        public ActionResult Index()
-        {
-            var users = context.Users.ToList();
-            IEnumerable<UpdateViewModel>
-                userList = (from u in users select new UpdateViewModel { UserId = u.Id, Email = u.Email, UserName = u.UserName, PhoneNumber = u.PhoneNumber }).AsEnumerable();
-            return View(userList);
-
-        }
-        //List User
-        //[HttpGet]
-        //public ActionResult ListUsers()
-        //{
-        //    var users = UserManager.Users;
-        //    return View(users);
-        //}
 
         //
         // GET: /Account/Login
@@ -101,11 +158,11 @@ namespace CourseWork2.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "Dashboard");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -146,7 +203,7 @@ namespace CourseWork2.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -162,34 +219,51 @@ namespace CourseWork2.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "Manager")]
         public ActionResult Register()
         {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleMngr.Roles.ToList();
+
+            ViewBag.Name = new SelectList(roles, "Name", "Name");
             return View();
         }
 
         //
         // POST: /Account/Register
+        [Authorize(Roles = "Manager")]
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleMngr.Roles.ToList();
+            ViewBag.Name = new SelectList(roles, "Name", "Name");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber};
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, FullName = model.FullName, PhoneNumber = model.PhoneNumber };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
+
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
+                    UserManager.AddToRole(user.Id, model.UserRoles);
+
+                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Account");
                 }
                 AddErrors(result);
             }
@@ -197,17 +271,9 @@ namespace CourseWork2.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult RegisterRole()
-        {
-            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
-            ViewBag.UserName = new SelectList(context.Users.ToList(), "UserName", "UserName");
-            return View();
-        }
 
         //POST: /Account/Register
-        [HttpPost] 
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegisterRole(RegisterViewModel model, ApplicationUser user)
@@ -218,10 +284,10 @@ namespace CourseWork2.Controllers
             {
                 updateId = i.ToString();
             }
-        //Assign Role user here
-        await this.UserManager.AddToRoleAsync(updateId, model.Name);
-        
-        return RedirectToAction("Index", "Home");
+            //Assign Role user here
+            await this.UserManager.AddToRoleAsync(updateId, model.Name);
+
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -235,6 +301,31 @@ namespace CourseWork2.Controllers
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
+        //Delete user
+        [Authorize(Roles = "Manager")]
+        public async Task<ActionResult> Delete(String id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessafe = $"User with Id = {id} cannot be found";
+                return View("Not Found");
+            }
+            else
+            {
+                var result = await UserManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+            return View("Index");
         }
 
         //
