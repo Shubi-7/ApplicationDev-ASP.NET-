@@ -7,12 +7,13 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CourseWork2.Models;
+using CourseWork2.Context;
 
 namespace CourseWork2.Controllers
 {
     public class ArtistsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private DataContext db = new DataContext();
 
         // GET: Artists
         public ActionResult Index()
@@ -46,7 +47,7 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Gender,BirthDate,PhoneNumber,Email")] Artist artist)
+        public ActionResult Create([Bind(Include = "Id,Name,Email,BirthDate,Gender,PhoneNumber")] Artist artist)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +79,7 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Gender,BirthDate,PhoneNumber,Email")] Artist artist)
+        public ActionResult Edit([Bind(Include = "Id,Name,Email,BirthDate,Gender,PhoneNumber")] Artist artist)
         {
             if (ModelState.IsValid)
             {

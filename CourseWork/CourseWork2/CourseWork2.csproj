@@ -167,6 +167,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Context\DataContext.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AlbumArtistsController.cs" />
     <Compile Include="Controllers\AlbumsController.cs" />
@@ -207,6 +208,12 @@
     <Compile Include="Models\ProducerAlbum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AlbumsAllViewModel.cs" />
+    <Compile Include="ViewModels\AlbumViewModel.cs" />
+    <Compile Include="ViewModels\CreateAlbumViewModel.cs" />
+    <Compile Include="ViewModels\DropDownItem.cs" />
+    <Compile Include="ViewModels\LoanAlbumViewModel.cs" />
+    <Compile Include="ViewModels\MemberLoanDetails.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

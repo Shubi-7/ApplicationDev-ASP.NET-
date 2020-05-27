@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CourseWork2.Models;
+using CourseWork2.Context;
+using CourseWork2.ViewModels;
 
 namespace CourseWork2.Controllers
 {
     public class AlbumsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private DataContext db = new DataContext();
 
         // GET: Albums
         public ActionResult Index()
         {
-            return View(db.Albums.ToList());
+            var album = db.Albums.Include(m => m.Artists).Include(m => m.Artists).Include(m => m.Producers).OrderBy(m => m.ReleaseDate).ToList();
+
+            return View(album);
         }
 
         // GET: Albums/Details/5
@@ -27,10 +32,179 @@ namespace CourseWork2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Album album = db.Albums.Find(id);
-            if (album == null)
+            Album albums = db.Albums.Find(id);
+            if (albums == null)
             {
                 return HttpNotFound();
+            }
+            return View(albums);
+        }
+
+        public ActionResult Add()
+        {
+            CreateAlbumViewModel album = new CreateAlbumViewModel();
+            album.ProducerList = new List<ProducerViewModel>();
+            album.ArtistList = new List<ArtistViewModel>();
+
+            album.Producers = new SelectList(db.Producers.ToList(), "Id", "Name");
+            album.Artists = new SelectList(db.Artists.ToList(), "Id", "Name");
+            ProducerViewModel producer = new ProducerViewModel { Name = "", Studio = "", DateOfBirth = DateTime.Now };
+            ArtistViewModel artist = new ArtistViewModel { BirthDate = DateTime.Now, Email = "" };
+            album.ProducerList.Add(producer);
+            album.ArtistList.Add(artist);
+            return View(album);
+        }
+        [HttpPost]
+        public ActionResult Add(CreateAlbumViewModel album, HttpPostedFileBase CoverImage)
+        {
+            album.Producers = new SelectList(db.Producers.ToList(), "Id", "Name");
+            album.Artists = new SelectList(db.Artists.ToList(), "Id", "Name");
+            if (ModelState.IsValid)
+            {
+                List<int> artistIds = album.ArtistIds != null ? album.ArtistIds.ToList() : new List<int>();
+                List<int> producerIds = album.ProducerIds != null ? album.ProducerIds.ToList() : new List<int>();
+
+                if (String.IsNullOrEmpty(album.ArtistList[0].Name) && artistIds.Count() == 0)
+                {
+                    ModelState.AddModelError("", "No Artist Selected");
+                    return View(album);
+                }
+
+                if (String.IsNullOrEmpty(album.ProducerList[0].Name) && producerIds.Count() == 0)
+                {
+                    ModelState.AddModelError("", "No Producers Selected");
+                    return View(album);
+                }
+
+                foreach (var item in album.ArtistList)
+                {
+                    if (!String.IsNullOrEmpty(item.Name))
+                    {
+                        Artist artist = new Artist
+                        {
+                            BirthDate = item.BirthDate,
+                            Email = item.Email,
+                            Gender = item.Gender,
+                            Name = item.Name,
+                            PhoneNumber = item.PhoneNumber
+
+                        };
+                        if (!db.Artists.Any(m => m.Email == item.Email && m.Name == item.Name))
+                        {
+                            db.Artists.Add(artist);
+                            db.SaveChanges();
+                            artistIds.Add(artist.Id);
+
+                        }
+                        else
+                        {
+                            artist = db.Artists.FirstOrDefault(m => m.Email == item.Email && m.Name == item.Name);
+                            artistIds.Add(artist.Id);
+                        }
+                    }
+                }
+
+
+
+                foreach (var item in album.ProducerList)
+                {
+                    if (!string.IsNullOrEmpty(item.Name))
+                    {
+                        Producer producer = new Producer
+                        {
+                            BirthDate = item.DateOfBirth,
+                            Name = item.Name,
+                            Studio = item.Studio
+                        };
+                        if (!db.Producers.Any(m => m.BirthDate == item.DateOfBirth && m.Name == item.Name && m.Studio == item.Studio))
+                        {
+                            db.Producers.Add(producer);
+                            db.SaveChanges();
+                            producerIds.Add(producer.Id);
+
+                        }
+                        else
+                        {
+                            producer = db.Producers.FirstOrDefault(m => m.BirthDate == item.DateOfBirth && m.Name == item.Name && m.Studio == item.Studio);
+                            producerIds.Add(producer.Id);
+                        }
+                    }
+                }
+
+
+                if (producerIds.Count() == 0 || artistIds.Count() == 0)
+                {
+                    ModelState.AddModelError("", "No Artist or Producers");
+                    return View(album);
+                }
+
+                Album album = new Album
+                {
+                    Producers = db.Producers.Where(m => producerIds.Contains(m.Id)).ToList(),
+                    Artists = db.Artists.Where(m => artistIds.Contains(m.Id)).ToList(),
+                    TrackLength = album.TrackLength,
+                    Name = album.Name,
+                    ReleaseDate = album.ReleaseDate,
+                    Studio = album.Studio,
+                    IsAgeBar = album.IsAgeBar,
+                    FinePerDay = album.FinePerDay,
+                    CopyNumber = album.CopyNumber,
+                    AlbumImagePath = "~/Images/Albums/"
+                };
+
+                Album prevAlbum = db.Albums.Include(m => m.Artists).Include(m => m.Producers)
+                            .FirstOrDefault(m => m.Name == album.Name);
+
+                bool Status = db.Albums.Include(m => m.Artists).Include(m => m.Producers)
+                            .Any(m => m.Name == album.Name);
+
+                if (Status)
+                {
+                    if (album.Producers.Intersect(prevAlbum.Producers) == null && album.Artists.Intersect(prevAlbum.Artists) == null)
+                    {
+                        db.Albums.Add(album);
+                        db.SaveChanges();
+
+                        if (!Directory.Exists(Server.MapPath("~/Images/Albums")))
+                        {
+                            Directory.CreateDirectory(Server.MapPath("~/Images/Albums"));
+                        }
+
+                        if (CoverImage.ContentLength > 0)
+                        {
+                            CoverImage.SaveAs(Server.MapPath("~/Images/Albums/" + albums.id + ".jpg"));
+
+
+                        }
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Album Already Exists");
+                        return View(album);
+                    }
+
+                }
+                else
+                {
+                    db.Albums.Add(albums);
+                    db.SaveChanges();
+
+                    if (!Directory.Exists(Server.MapPath("~/Images/Albums")))
+                    {
+                        Directory.CreateDirectory(Server.MapPath("~/Images/Albums"));
+                    }
+
+                    if (CoverImage.ContentLength > 0)
+                    {
+                        CoverImage.SaveAs(Server.MapPath("~/Images/Albums/" + albums.id + ".jpg"));
+
+
+                    }
+                    return RedirectToAction("Index");
+                }
+
+
             }
             return View(album);
         }
@@ -38,7 +212,10 @@ namespace CourseWork2.Controllers
         // GET: Albums/Create
         public ActionResult Create()
         {
-            return View();
+            AlbumViewModel album = new AlbumViewModel();
+            album.Producers = new SelectList(db.Producers.ToList(), "Id", "Name");
+            album.ArtistList = new SelectList(db.Artists.ToList(), "Id", "Name");
+            return View(album);
         }
 
         // POST: Albums/Create
@@ -46,16 +223,42 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,Name,CopyNumber,Studio,ReleaseDate,TrackLength,IsAgeBar,FinePerDay,AlbumImagePath")] Album album)
+        public ActionResult Create(AlbumViewModel albums, HttpPostedFileBase CoverImage)
         {
             if (ModelState.IsValid)
             {
+
+                Album album = new Album
+                {
+                    Producers = db.Producers.Where(m => album.ProducerIds.Contains(m.Id)).ToList(),
+                    Artists = db.Artists.Where(m => album.ArtistIds.Contains(m.Id)).ToList(),
+                    TrackLength = album.TrackLength,
+                    Name = album.Name,
+                    ReleaseDate = albums.ReleaseDate,
+                    Studio = album.Studio,
+                    AlbumImagePath = "~/Images/Albums/"
+                };
                 db.Albums.Add(album);
                 db.SaveChanges();
+
+                album = db.Albums.OrderByDescending(m => m.id).FirstOrDefault();
+
+
+                if (!Directory.Exists(Server.MapPath("~/Images/Albums")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Images/Albums"));
+                }
+
+                if (CoverImage.ContentLength > 0)
+                {
+                    CoverImage.SaveAs(Server.MapPath("~/Images/Albums/" + album.id + ".jpg"));
+                }
+
                 return RedirectToAction("Index");
             }
-
-            return View(album);
+            albums.Producers = new SelectList(db.Producers.ToList(), "Id", "Name");
+            albums.ArtistList = new SelectList(db.Artists.ToList(), "Id", "Name");
+            return View(albums);
         }
 
         // GET: Albums/Edit/5
@@ -78,15 +281,15 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,Name,CopyNumber,Studio,ReleaseDate,TrackLength,IsAgeBar,FinePerDay,AlbumImagePath")] Album album)
+        public ActionResult Edit(Album albums)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(album).State = EntityState.Modified;
+                db.Entry(albums).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(album);
+            return View(albums);
         }
 
         // GET: Albums/Delete/5
@@ -96,12 +299,12 @@ namespace CourseWork2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Album album = db.Albums.Find(id);
-            if (album == null)
+            Album albums = db.Albums.Find(id);
+            if (albums == null)
             {
                 return HttpNotFound();
             }
-            return View(album);
+            return View(albums);
         }
 
         // POST: Albums/Delete/5
@@ -109,8 +312,8 @@ namespace CourseWork2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Album album = db.Albums.Find(id);
-            db.Albums.Remove(album);
+            Album albums = db.Albums.Find(id);
+            db.Albums.Remove(albums);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -17,8 +17,8 @@ namespace CourseWork2.Controllers
         // GET: AlbumArtists
         public ActionResult Index()
         {
-            var albumArtists = db.AlbumArtists.Include(a => a.Album).Include(a => a.Artist);
-            return View(albumArtists.ToList());
+            var AlbumArtists = db.AlbumArtists.Include(a => a.Artist);
+            return View(AlbumArtists.ToList());
         }
 
         // GET: AlbumArtists/Details/5
@@ -28,18 +28,17 @@ namespace CourseWork2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AlbumArtists albumArtists = db.AlbumArtists.Find(id);
-            if (albumArtists == null)
+            AlbumArtists AlbumArtist = db.AlbumArtists.Find(id);
+            if (AlbumArtist == null)
             {
                 return HttpNotFound();
             }
-            return View(albumArtists);
+            return View(AlbumArtist);
         }
 
         // GET: AlbumArtists/Create
         public ActionResult Create()
         {
-            ViewBag.AlbumId = new SelectList(db.Albums, "id", "Name");
             ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name");
             return View();
         }
@@ -49,18 +48,17 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ArtistId,AlbumId")] AlbumArtists albumArtists)
+        public ActionResult Create([Bind(Include = "ArtistId,AlbumId")] AlbumArtists AlbumArtist)
         {
             if (ModelState.IsValid)
             {
-                db.AlbumArtists.Add(albumArtists);
+                db.AlbumArtists.Add(AlbumArtist);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AlbumId = new SelectList(db.Albums, "id", "Name", albumArtists.AlbumId);
-            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", albumArtists.ArtistId);
-            return View(albumArtists);
+            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", AlbumArtist.ArtistId);
+            return View(AlbumArtist);
         }
 
         // GET: AlbumArtists/Edit/5
@@ -70,14 +68,13 @@ namespace CourseWork2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AlbumArtists albumArtists = db.AlbumArtists.Find(id);
-            if (albumArtists == null)
+            AlbumArtists AlbumArtist = db.AlbumArtists.Find(id);
+            if (AlbumArtist == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.AlbumId = new SelectList(db.Albums, "id", "Name", albumArtists.AlbumId);
-            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", albumArtists.ArtistId);
-            return View(albumArtists);
+            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", AlbumArtist.ArtistId);
+            return View(AlbumArtist);
         }
 
         // POST: AlbumArtists/Edit/5
@@ -85,17 +82,16 @@ namespace CourseWork2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArtistId,AlbumId")] AlbumArtists albumArtists)
+        public ActionResult Edit([Bind(Include = "ArtistId,AlbumId")] AlbumArtists AlbumArtist)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(albumArtists).State = EntityState.Modified;
+                db.Entry(AlbumArtist).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.AlbumId = new SelectList(db.Albums, "id", "Name", albumArtists.AlbumId);
-            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", albumArtists.ArtistId);
-            return View(albumArtists);
+            ViewBag.ArtistId = new SelectList(db.Artists, "Id", "Name", AlbumArtist.ArtistId);
+            return View(AlbumArtist);
         }
 
         // GET: AlbumArtists/Delete/5
@@ -105,12 +101,12 @@ namespace CourseWork2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AlbumArtists albumArtists = db.AlbumArtists.Find(id);
-            if (albumArtists == null)
+            AlbumArtists AlbumArtist = db.AlbumArtists.Find(id);
+            if (AlbumArtist == null)
             {
                 return HttpNotFound();
             }
-            return View(albumArtists);
+            return View(AlbumArtist);
         }
 
         // POST: AlbumArtists/Delete/5
@@ -118,8 +114,8 @@ namespace CourseWork2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            AlbumArtists albumArtists = db.AlbumArtists.Find(id);
-            db.AlbumArtists.Remove(albumArtists);
+            AlbumArtists AlbumArtist = db.AlbumArtists.Find(id);
+            db.AlbumArtists.Remove(AlbumArtist);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -134,3 +130,4 @@ namespace CourseWork2.Controllers
         }
     }
 }
+
