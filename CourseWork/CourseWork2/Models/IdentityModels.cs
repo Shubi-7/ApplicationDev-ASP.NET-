@@ -40,14 +40,5 @@ namespace CourseWork2.Models
         public System.Data.Entity.DbSet<CourseWork2.Models.Artist> Artists { get; set; }
         public System.Data.Entity.DbSet<CourseWork2.Models.Producer> Producers { get; set; }
 
-        public System.Data.Entity.DbSet<CourseWork2.Models.Album> Albums { get; set; }
-
-        public System.Data.Entity.DbSet<CourseWork2.Models.LoanType> LoanTypes { get; set; }
-
-        public System.Data.Entity.DbSet<CourseWork2.Models.MemberCategory> MemberCategories { get; set; }
-
-        public System.Data.Entity.DbSet<CourseWork2.Models.Member> Members { get; set; }
-
-        public System.Data.Entity.DbSet<CourseWork2.Models.Loan> Loans { get; set; }
     }
 }

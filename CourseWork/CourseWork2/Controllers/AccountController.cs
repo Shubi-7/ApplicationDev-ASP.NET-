@@ -58,12 +58,68 @@ namespace CourseWork2.Controllers
 
                 var roles = roleMngr.Roles.ToList();
 
+<<<<<<< HEAD
                 var appUser = context.Users.FirstOrDefault(m => m.Id == id);//_userManager.FindById(id);
                 update.Email = appUser.Email;
                 update.UserId = id;
                 update.UserName = appUser.UserName;
                 update.PhoneNumber = appUser.PhoneNumber;
                 ViewBag.UserRoles = new SelectList(roles, "Name", "Name", roles.FirstOrDefault(m => m.Id == appUser.Roles.FirstOrDefault().RoleId).Name);
+=======
+        public ActionResult Index()
+        {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleManager.Roles.ToList();
+            var users = context.Users.Include(m =>m.Roles).ToList();
+            IEnumerable<UpdateViewModel> userList = (from u in users
+                                                     select new UpdateViewModel
+                                                     {
+                                                         UserId = u.Id,
+                                                         Email = u.Email,
+                                                         PhoneNumber = u.PhoneNumber,
+                                                         UserName = u.UserName,
+                                                         UserRoles = roles.FirstOrDefault(m => m.Id == u.Roles.FirstOrDefault().RoleId).Name
+                                                     }).AsEnumerable();
+            return View(userList);
+        }
+        [Authorize(Roles ="Manager")]
+        public ActionResult EditUser(string id)
+        {
+            if (id != null)
+            {
+                UpdateViewModel update = new UpdateViewModel();
+                var roleStore = new RoleStore<IdentityRole>(context);
+                var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+                var roles = roleManager.Roles.ToList();
+
+                var appUser = context.Users.FirstOrDefault(m => m.Id == id);
+                update.Email = appUser.Email;
+                update.UserName = appUser.UserName;
+                update.PhoneNumber = appUser.PhoneNumber;
+                ViewBag.UserRoles = new SelectList(roles, "Name", "Name", roles.FirstOrDefault(m => m.Id == appUser.Roles.FirstOrDefault().RoleId).Name);
+
+                return View(update);
+
+            }
+            return RedirectToAction("Index");
+        }
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public ActionResult EditUser(UpdateViewModel user)
+        {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleManager.Roles.ToList();
+
+            ViewBag.UserRoles = newSelectList(roles, "Name", "Name");
+
+        }
+
+>>>>>>> parent of a01464d... All Required Controllers Added
 
                 return View(update);
             }

@@ -17,15 +17,10 @@ namespace CourseWork2.Models
         public string FullName { get; set; }
         [Required]
         public string Address { get; set; }
-
         public string Email { get; set; }
         [Required]
-
-        public string Contact { get; set; }
-        [Required]
         public DateTime BirthDate { get; set; }
-        public int MemberCategoryId { get; set; }
-
+        public string MemberCategoryId { get; set; }
         [ForeignKey("MemberCategoryId")]
         public virtual MemberCategory MemberCategory { get; set; }
 
