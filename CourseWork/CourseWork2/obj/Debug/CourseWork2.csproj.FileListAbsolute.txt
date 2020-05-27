@@ -628,3 +628,6 @@ D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.csproj.CoreCompil
 D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.csproj.CopyComplete
 D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.dll
 D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.pdb
+D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.Migrations.InitialCreate.resources
+D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.csproj.GenerateResource.cache
+D:\ApplicationDev\CourseWork\CourseWork2\obj\Debug\CourseWork2.Migrations.Coursework2.resources
