@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using CourseWork2.DataCon;
+using CourseWork2.Context;
 using CourseWork2.Models;
 using CourseWork2.ViewModels;
 
