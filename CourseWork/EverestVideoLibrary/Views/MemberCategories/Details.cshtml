@@ -1,0 +1,43 @@
+﻿@model CourseWork2.Models.MemberCategory
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>MemberCategory</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalLoan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalLoan)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <a class="btn btn-success" href="@Url.Action("Edit","MemberCategories",new { id = Model.Id })">Edit</a>
+    <a class="btn btn-default" href="@Url.Action("Index","MemberCategories")">Back To List</a>
+</p>

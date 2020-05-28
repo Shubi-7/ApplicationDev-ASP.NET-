@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CourseWork2.ViewModels.LoanAlbumViewModel>
+@{
+    ViewBag.Title = "LoanAlbum";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h2>Album in Loan</h2>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalLoan)
+        </th>
+        <th>Album</th>
+        <th> Copy No</th>
+        <th> Member</th>
+        <th>IssueDate</th>
+        <th>DueDate</th>
+        <th>Loan Type</th>
+
+    </tr>
+    @if (Model.ToList().Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalLoan)
+                </td>
+                <td>@item.Loan.Album.Name</td>
+                <td>@item.Loan.Album.CopyNumber</td>
+                <td>@item.Loan.Members.FullName</td>
+
+                <td>@item.Loan.IssuedDate</td>
+                <td>@item.Loan.DueDate</td>
+                <td>@item.Loan.LoanTypes.Description</td>
+
+            </tr>
+        }
+    }
+    else
+    {
+        <tr><td colspan="7">No Record Found.</td></tr>
+    }
+</table>

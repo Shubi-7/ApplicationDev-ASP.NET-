@@ -1,0 +1,51 @@
+﻿@model IEnumerable<CourseWork2.ViewModels.MemberLoanDetails>
+@{
+    ViewBag.Title = "MemberDetail";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h2>Member Details</h2>
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalLoan)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+
+
+    </tr>
+    @if (Model.ToList().Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalLoan)
+                </td>
+                <td>
+                    @if (item.MaxLoan <= item.TotalLoan)
+                    {
+                        <label class="text text-danger"> @("Loan Not Available")</label>
+                    }
+                    else
+                    {
+                        <label class="text text-success">@("Loan Available")</label>
+                    }
+                </td>
+
+
+            </tr>
+        }
+    }
+    else
+    {
+        <tr><td colspan="4">No Record Found.</td></tr>
+    }
+</table>

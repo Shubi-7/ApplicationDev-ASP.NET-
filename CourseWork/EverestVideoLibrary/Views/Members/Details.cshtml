@@ -1,0 +1,75 @@
+﻿@model CourseWork2.Models.Member
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Member</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MemberCatagories.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberCatagories.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MemberNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Contact)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Contact)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <a class="btn btn-success" href="@Url.Action("Edit","Members",new { id = Model.Id })">Edit</a>
+    <a class="btn btn-default" href="@Url.Action("Index","Members")">Back To List</a>
+</p>

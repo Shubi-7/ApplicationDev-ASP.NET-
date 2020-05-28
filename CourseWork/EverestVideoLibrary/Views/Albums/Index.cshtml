@@ -1,0 +1,82 @@
+﻿@model IEnumerable<CourseWork2.Models.Albums>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<h2>Albums</h2>
+
+<div class="m-4">
+    <a class="btn btn-outline-primary" href="@Url.Action("Add", "Albums")">Add New Album</a>
+</div>
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CopyNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Length)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StudioName)
+        </th>
+        <th>
+            18+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FinePerDay)
+        </th>
+
+        <th>
+            Cover Image
+        </th>
+        <th class="pl-5">
+            Action
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CopyNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Length)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudioName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAgeBar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinePerDay)
+            </td>
+            <td>
+                <img height="50" width="40" class="ml-4" src="@Url.Content(item.CoverImagePath+item.id+".jpg")" onerror="if (this.src != 'images/mov.jpg') this.src = 'images/mov.jpg';">
+            </td>
+            <td>
+                <a href="@Url.Action("Edit" , new { id = item.id })" class="btn btn-dark"> Edit </a>
+                <a href="@Url.Action("Details" , new { id = item.id })" class="btn btn-dark"> Detail</a>
+                <a href="@Url.Action("Delete" , new { id = item.id })" class="btn btn-dark"> Delete</a>
+
+            </td>
+        </tr>
+    }
+
+</table>

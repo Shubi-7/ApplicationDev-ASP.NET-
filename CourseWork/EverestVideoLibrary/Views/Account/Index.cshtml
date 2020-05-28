@@ -1,0 +1,56 @@
+﻿@model IEnumerable<CourseWork2.Models.UpdateViewModel>
+@{
+    
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>View User List</h2>
+
+<div class="m-4">
+    <a class="btn btn-outline-primary" href="@Url.Action("Register", "Account")">Add New User</a>
+</div>
+
+<table class="table table-hover ">
+    <tr>
+        <th>
+            UserName
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Phone Number
+        </th>
+        <th>
+            Role
+        </th>
+        <th class="m-2">Action</th>
+
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @item.UserName
+        </td>
+        <td>
+            @item.Email
+        </td>
+        <td>
+            @item.PhoneNumber
+        </td>
+        <td>
+            @item.UserRoles
+        </td>
+        @*<th>@Html.ActionLink("EditUser", "EditUser", new { id = item.UserId })</th>*@
+
+        <td>
+            <a href="@Url.Action("EditUser" , new { id=item.UserId })" class="btn btn-dark"> Edit User</a>
+            <a href="@Url.Action("Delete","Account" , new { id = item.UserId })" class="btn btn-danger"> Delete</a>
+
+        </td>
+        
+
+    </tr>
+    }
+</table>

@@ -1,0 +1,140 @@
+﻿@model CourseWork2.Models.Loan
+@{
+    ViewBag.Title = "ByCopyNumber";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h2>Search By Copy Number</h2>
+
+<style>
+    body {
+        background: #f2f2f2;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    .search {
+        width: 100%;
+        position: relative;
+        display: flex;
+    }
+
+    .searchTerm {
+        width: 100%;
+        border: 3px solid #00B4CC;
+        border-right: none;
+        padding: 5px;
+        height: 20px;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+        color: #9DBFAF;
+    }
+
+        .searchTerm:focus {
+            color: #00B4CC;
+        }
+
+    .searchButton {
+        width: 40px;
+        height: 36px;
+        border: 1px solid #00B4CC;
+        background: #00B4CC;
+        text-align: center;
+        color: #fff;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    /*Resize the wrap to see the search bar change!*/
+    .wrap {
+        width: 30%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+
+
+<div class="example">
+    @using (Html.BeginForm("ByCopyNumber", "Search", FormMethod.Post))
+    {
+        @Html.DropDownList("Id", new SelectList(ViewBag.Id, "Value", "Text"), "Select Album", new { @class = "form-control", id = "ddlId" })
+        <br /><button type="submit" class="searchButton"><i class="fa fa-search"></i></button>
+    }
+
+</div>
+<div class="col-md-12"> &nbsp;</div>
+<table class="table table-hover">
+    <tr>
+        <th>
+            Album
+        </th>
+        <th>
+            Loan Type
+        </th>
+        <th>
+            MemberNo
+        </th>
+        <th>
+            Total Amount
+        </th>
+        <th>
+            Fine Amount
+        </th>
+        <th>
+            Issued Date
+        </th>
+        <th>
+            Due Date
+        </th>
+        <th>
+            Returned Date
+        </th>
+
+    </tr>
+    @if (Model != null)
+    {
+
+        <tr>
+            <td>
+                @Model.Album.Name
+            </td>
+            <td>
+                @Model.LoanTypes.Description
+            </td>
+            <td>
+                @Model.Members.MemberNo
+            </td>
+            <td>
+                @Model.TotalAmount
+            </td>
+            <td>
+                @Model.FineAmount
+            </td>
+            <td>
+                @Model.IssuedDate
+            </td>
+            <td>
+                @Model.DueDate
+            </td>
+            <td>
+                @Model.ReturnedDate
+            </td>
+
+        </tr>
+
+    }
+    else
+    {
+        <tr><td colspan="8">No Records Found.</td></tr>
+    }
+</table>
+@section scripts{
+    <script>
+    $(document).ready(function () {
+            $("#ddlId").select2({
+                placeholder: 'Select Album'
+            });
+        })</script>
+}

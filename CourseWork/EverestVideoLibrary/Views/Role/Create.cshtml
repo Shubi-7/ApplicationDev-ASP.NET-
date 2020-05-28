@@ -1,0 +1,22 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<h2>Add new user role</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.Label(("Role Name"), new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <input type="submit" value="Create Role" class="btn btn-success m-3" />
+    <a class="btn btn-default m-3" href="@Url.Action("Index","Role")">Back To List</a>
+}
+

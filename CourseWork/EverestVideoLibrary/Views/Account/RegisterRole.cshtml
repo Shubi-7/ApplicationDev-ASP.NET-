@@ -1,0 +1,48 @@
+﻿@model CourseWork2.Models.RegisterViewModel
+@{
+    ViewBag.Title = "RegisterRole";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("RegisterRole", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Manage Roles of User</h4>
+    <hr />
+
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+
+    <div class="form-group">
+        @Html.Label("Select Role", new { @class = "col-md-2 control-label" })
+        <div class="col-md-offset-2 col-md-10">
+            @Html.DropDownList("UserName")
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <!--Select the Role Type for the User-->
+    <div class="form-group">
+        @Html.Label("Select User", new { @class = "col-md-2 control-label" })
+        <div class="col-md-offset-2 col-md-10">
+            @Html.DropDownList("Name")
+        </div>
+    </div>
+    <!--Ends Here-->
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="Register" />
+            <a class="btn btn-default" href="@Url.Action("Index","Role")"> Back to list </a>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+

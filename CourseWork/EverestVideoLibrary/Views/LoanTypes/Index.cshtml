@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CourseWork2.Models.LoanType>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Loan Types</h2>
+
+<div class="m-4">
+    <a class="btn btn-outline-primary" href="@Url.Action("Create", "Loantypes")">Add New Loan Type</a>
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Days)
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Days)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit" , new { id = item.Id })" class="btn btn-dark"> Edit </a>
+            <a href="@Url.Action("Details" , new { id = item.Id })" class="btn btn-dark"> Detail</a>
+            <a href="@Url.Action("Delete" , new { id = item.Id })" class="btn btn-dark"> Delete</a>
+        </td>
+    </tr>
+}
+
+</table>
