@@ -227,6 +227,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\dashboard-bootstrap.css" />
     <Content Include="Content\dashboard-custom.css" />
+    <Content Include="Content\Dashboard1-1.css" />
+    <Content Include="Content\Dashboard1-2.css" />
+    <Content Include="Content\Dashboard1.css" />
     <Content Include="Content\datatable.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
