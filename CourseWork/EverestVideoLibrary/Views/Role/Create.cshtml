@@ -4,19 +4,25 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
+<h2>Create</h2>
 
-<h2>Add new user role</h2>
-
+<style type="text/css">
+    #tbrole, .c {
+        border: double;
+    }
+</style>
+    
 @using (Html.BeginForm())
 {
-    <div class="form-group">
-        @Html.Label(("Role Name"), new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-        </div>
-    </div>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <td class="c">Enter Role Name to be created:</td>
+            <td class="c">
+                @Html.EditorFor(m => m.Name)
+            </td>
+        </tr>
+    </table>
+    <input class="btn btn-facebook" type="submit" value="Create Role" />
 
-    <input type="submit" value="Create Role" class="btn btn-success m-3" />
-    <a class="btn btn-default m-3" href="@Url.Action("Index","Role")">Back To List</a>
-}
+    }
 

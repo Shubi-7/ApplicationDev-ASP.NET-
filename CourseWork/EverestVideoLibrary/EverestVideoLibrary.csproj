@@ -344,6 +344,7 @@
     <Content Include="Views\Search\LoanAlbum.cshtml" />
     <Content Include="Views\Search\MemberInActive.cshtml" />
     <Content Include="Views\Shared\_menuLayout.cshtml" />
+    <Content Include="Views\Role\AssignRoleToUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,22 +4,24 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<h2>Roles List</h2>
+<h2>Available Role for Application</h2>
+<a class="btn btn-facebook" href="@Url.Action("Create","Role")">Create Role</a>
+<a class="btn btn-facebook" href="@Url.Action("RegisterRole","Account")">Register Role</a>
+<br />
 
-<div class="m-4">
-    <a class="btn btn-outline-primary" href="@Url.Action("Create", "Role")">Add New Role</a>
-</div>
-<table class="table table-hover">
-    <thead>
-        Name Of Role
-    </thead>
-    
-    @foreach (var item in Model){
-         <tr>
-            <td>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th class="c">
+            Role Name
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="c">
                 @item.Name
             </td>
-         </tr>
+        </tr>
     }
 </table>
 
